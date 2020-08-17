@@ -51,7 +51,7 @@ func dataSourceCheesecakesRead(ctx context.Context, d *schema.ResourceData, m in
 		{
 			"id": 6,
 			"name": "Strawberry Cheesecake",
-			"teaser": "Spike your cholesterol with a plate of creamy, fatty, savoury goodness",
+			"teaser": "Spike your cholesterol with a plate of creamy, fatty, tangy goodness",
 			"description": "",
 			"price": 250,
 			"image": "strawberry-cheesecake.png",
