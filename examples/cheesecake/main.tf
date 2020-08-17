@@ -7,12 +7,9 @@ terraform {
   }
 }
 
-provider "cheesecake" {}
+data "cheesecake_cheesecakes" "all" {}
 
-module "cake" {
-  source = "./cheesecake"
-}
-
+# Returns all coffees
 output "cheesecakes" {
-  value = module.cake.cheesecakes
+  value = data.cheesecake_cheesecakes.all.cheesecakes
 }

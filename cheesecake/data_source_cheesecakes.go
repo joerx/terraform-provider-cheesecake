@@ -3,8 +3,6 @@ package cheesecake
 import (
 	"context"
 	"encoding/json"
-	"fmt"
-	"net/http"
 	"strconv"
 	"time"
 
@@ -12,12 +10,12 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-// Coffee data source
-func dataSourceCoffees() *schema.Resource {
+// Cheesecake data source
+func dataSourceCheesecakes() *schema.Resource {
 	return &schema.Resource{
-		ReadContext: dataSourceCoffeesRead,
+		ReadContext: dataSourceCheesecakesRead,
 		Schema: map[string]*schema.Schema{
-			"coffees": {
+			"cheesecakes": {
 				Type:     schema.TypeList,
 				Computed: true,
 				Elem: &schema.Resource{
@@ -44,30 +42,37 @@ func dataSourceCoffees() *schema.Resource {
 	}
 }
 
-func dataSourceCoffeesRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	client := &http.Client{Timeout: 10 * time.Second}
-
+func dataSourceCheesecakesRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 
-	req, err := http.NewRequest("GET", fmt.Sprintf("%s/coffees", "http://localhost:19090"), nil)
-	if err != nil {
+	// just mock the response so we don't need any external services running
+	data := `
+	[
+		{
+			"id": 6,
+			"name": "Strawberry Cheesecake",
+			"teaser": "Spike your cholesterol with a plate of creamy, fatty, savoury goodness",
+			"description": "",
+			"price": 250,
+			"image": "strawberry-cheesecake.png",
+			"ingredients": [
+				{
+					"ingredient_id": 1
+				},
+				{
+					"ingredient_id": 5
+				}
+			]
+		}
+	]
+	`
+
+	cheesecakes := make([]map[string]interface{}, 0)
+	if err := json.Unmarshal([]byte(data), &cheesecakes); err != nil {
 		return diag.FromErr(err)
 	}
 
-	r, err := client.Do(req)
-	if err != nil {
-		return diag.FromErr(err)
-	}
-
-	defer r.Body.Close()
-
-	coffees := make([]map[string]interface{}, 0)
-	err = json.NewDecoder(r.Body).Decode(&coffees)
-	if err != nil {
-		return diag.FromErr(err)
-	}
-
-	if err := d.Set("coffees", coffees); err != nil {
+	if err := d.Set("cheesecakes", cheesecakes); err != nil {
 		return diag.FromErr(err)
 	}
 
